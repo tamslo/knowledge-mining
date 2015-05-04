@@ -1,0 +1,9 @@
+# IntelliJ configuration
+.idea/
+
+# Generated SQL Scripts
+sql/
+
+# Dumps
+dumps/article_categories_en.ttl
+dumps/mappingbased_properties_en.ttl
