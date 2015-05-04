@@ -76,8 +76,8 @@ def extractEntities(line):
     return entities
 
 def showProgress(current, total):
-    progress = current / total
-    sys.stdout.write("\r%d%%" % progress)
+    progress = float(current) / float(total)
+    sys.stdout.write("\r%.2f%%" % progress)
     sys.stdout.flush()
 
 ### ACTUAL START OF SCRIPT
