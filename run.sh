@@ -8,7 +8,7 @@ echo -e "$color01 \nProcessing dumps ... $noColor"
 python scripts/processDumps.py
 echo 'Done.'
 
-echo -e "$color02 \nNow use the phpmyadmin import function with the all_tables.sql file."
+echo -e "$color02 \nNow use the phpmyadmin import function with the files in sql/."
 echo -e "Press any key when it's done ...\n $noColor"
 read -n 1 -s
 

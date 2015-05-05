@@ -1,5 +1,7 @@
 # Mining implicit knowledge
 
+**! THIS APPROACH DOESN'T WORK because the resulting SQL scripts are too big to import**
+
 For the seminar ['Knowledge Mining'](http://knowmin2015.blogspot.de/) at [Hasso-Plattner-Institute](http://hpi.de/en/) in Potsdam, Germany, we are working on extracting knowlegde from DBpedia Categories.
 
 ## How it could work
@@ -64,4 +66,4 @@ The script [evaluate.php](scripts/evaluate.php) inserts data into the latter two
 	* **import** the **SQL scripts** into your db (categories_join after catergories and statements!)
 	* **evaluate.php**  
 * or 
-	* **run.sh** (but you still have to import one sql file into your db manually)
+	* **run.sh** (but you still have to import the sql files into your db manually)
