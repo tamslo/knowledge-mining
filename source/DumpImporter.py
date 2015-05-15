@@ -30,7 +30,9 @@ class DumpImporter():
         category = entities["object"]
         resource = entities["subject"]
         try:
-            cursor.execute("INSERT INTO categories (category, resource) VALUES ('{0}', '{1}');".format(category, resource))
+            query = "INSERT INTO categories (category, resource) VALUES (%s, %s);"
+            cursor.execute(query, (category, resource))
+            # cursor.execute("INSERT INTO categories (category, resource) VALUES ('{0}', '{1}');".format(category, resource))
         except mysql.connector.Error as err:
             print("Failed inserting {0}, {1} into categories: {2}".format(category, resource, err))
 
@@ -40,7 +42,9 @@ class DumpImporter():
         predicate = entities["predicate"]
         object = entities["object"]
         try:
-            cursor.execute("INSERT INTO statements (subject, predicate, object) VALUES ('{0}', '{1}', '{2}');".format(subject, predicate, object))
+            query = "INSERT INTO statements (subject, predicate, object) VALUES (%s, %s, %s);"
+            cursor.execute(query, (subject, predicate, object))
+            # cursor.execute("INSERT INTO statements (subject, predicate, object) VALUES ('{0}', '{1}', '{2}');".format(subject, predicate, object))
         except mysql.connector.Error as err:
             print("Failed inserting {0}, {1}, {2} into categories: {3}".format(subject, predicate, object, err))
 
@@ -67,8 +71,8 @@ class DumpImporter():
                 else:
                     entities[current_entity] += char
                     continue
-            elif char == "'":
-                entities[current_entity] += "\\" + char
+            # elif char == "'":
+                # entities[current_entity] += "\\" + char
             else:
                 entities[current_entity] += char
             position += 1
