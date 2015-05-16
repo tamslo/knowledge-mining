@@ -29,7 +29,7 @@ class Evaluator():
             if category not in categories:
                 categories.append(category)
 
-        results = open('results' + str(datetime.now()).replace(' ', '').replace(':', '').replace('.', ''), 'w')
+        results = open('results' + str(datetime.now()).replace(' ', '').replace(':', '').replace('.', ''), 'w', encoding="utf8")
         results.write("Number of categories: " + str(len(categories)) + "\n")
 
         another_cursor = db_connection.cursor(dictionary = True)
