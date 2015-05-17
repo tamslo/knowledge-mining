@@ -29,7 +29,7 @@ except:
     pass
 
 db_connection = mysql.connector.connect(**MYSQL_CONFIG)
-cursor = db_connection.cursor()
+cursor = db_connection.cursor(buffered = True, dictionary = True)
 
 # drop all tables that we want to use might already exist
 
@@ -50,7 +50,7 @@ except mysql.connector.Error as err:
 
 # import dumps
 
-dump_importer = DumpImporter()
+dump_importer = DumpImporter(cursor)
 
 print("Importing categories dump ...")
 dump_importer.execute("categories", CATEGORIES_DUMP_PATH)
@@ -71,7 +71,11 @@ except mysql.connector.Error as err:
 
 print("Evaluating ...")
 
-evaluator = Evaluator()
+another_cursor = db_connection.cursor(dictionary = True)
+
+evaluator = Evaluator(cursor, another_cursor)
 evaluator.execute()
+
+print("Done.")
 
 db_connection.close()

@@ -1,50 +1,42 @@
 import mysql.connector
 import re
 
-from Config import Config
-
 class DumpImporter():
 
-    def __init__(self):
-        config = Config()
-        self.mysql_config = config.get_mysql_config()
+    def __init__(self, cursor):
+        self.cursor = cursor
 
     def execute(self, dump_type, dump_path):
-        db_connection = mysql.connector.connect(**self.mysql_config)
-        cursor = db_connection.cursor()
-
         dump = open(dump_path, encoding="utf8")
 
         for line in dump:
             if line.startswith('<'):
                 entities = self.extract_entities(line)
                 if dump_type == "categories":
-                    self.process_category(entities, cursor)
+                    self.process_category(entities)
                 elif dump_type == "statements":
-                    self.process_statement(entities, cursor)
+                    self.process_statement(entities)
             else:
                 continue
 
 
-    def process_category(self, entities, cursor):
+    def process_category(self, entities):
         category = entities["object"]
         resource = entities["subject"]
         try:
             query = "INSERT INTO categories (category, resource) VALUES (%s, %s);"
-            cursor.execute(query, (category, resource))
-            # cursor.execute("INSERT INTO categories (category, resource) VALUES ('{0}', '{1}');".format(category, resource))
+            self.cursor.execute(query, (category, resource))
         except mysql.connector.Error as err:
             print("Failed inserting {0}, {1} into categories: {2}".format(category, resource, err))
 
 
-    def process_statement(self, entities, cursor):
+    def process_statement(self, entities):
         subject = entities["subject"]
         predicate = entities["predicate"]
         object = entities["object"]
         try:
             query = "INSERT INTO statements (subject, predicate, object) VALUES (%s, %s, %s);"
-            cursor.execute(query, (subject, predicate, object))
-            # cursor.execute("INSERT INTO statements (subject, predicate, object) VALUES ('{0}', '{1}', '{2}');".format(subject, predicate, object))
+            self.cursor.execute(query, (subject, predicate, object))
         except mysql.connector.Error as err:
             print("Failed inserting {0}, {1}, {2} into categories: {3}".format(subject, predicate, object, err))
 
@@ -61,7 +53,6 @@ class DumpImporter():
         if line.endswith(' '):
             line = line[:-1]
 
-        # TODO: escape properly
         for char in line:
             if char == ' ':
                 if current_entity == "subject":
@@ -71,8 +62,6 @@ class DumpImporter():
                 else:
                     entities[current_entity] += char
                     continue
-            # elif char == "'":
-                # entities[current_entity] += "\\" + char
             else:
                 entities[current_entity] += char
             position += 1
