@@ -1,3 +1,9 @@
 .idea
-__pycache__
-results*
+
+_pycache__
+
+results
+
+dumps/art*
+dumps/map*
+dumps/test*
