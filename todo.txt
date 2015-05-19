@@ -1,0 +1,15 @@
+# DONE
+
+
+
+
+# TODO
+
+- hashes
+- csv is not inserted properly into db (optionally enclosed by doesn't work??)
+- what needs to be analysed?
+  - no. categories
+  - no. subjects per category
+  - no. distinct pred/obj pairs
+- script for suggestions
+- small test data (select entries with many links to other entries)

@@ -1,6 +1,6 @@
 import mysql.connector
 
-class DumpAnalyser():
+class Analyser():
 
     def __init__(self, cursor, another_cursor):
         self.cursor = cursor

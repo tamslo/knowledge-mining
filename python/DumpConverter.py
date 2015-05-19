@@ -52,7 +52,7 @@ class DumpConverter():
 
 
     def convert_dump(self, dump, output_file, type):
-        csv_writer = csv.writer(output_file)
+        csv_writer = csv.writer(output_file, lineterminator='\n')
         current_line = 0
         message = " Line"
         for line in dump:

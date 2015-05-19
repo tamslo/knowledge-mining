@@ -9,7 +9,8 @@ CREATE TABLE statements (
 	predicate VARCHAR(127),
 	object VARCHAR(127)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOAD DATA INFILE 'path_to_stateents.csv'
-INTO TABLE categories
-FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n';
+LOAD DATA INFILE 'C:/Users/Tamara/OneDrive/Knowledge Mining/project/results/statements.csv'
+    INTO TABLE statements
+    FIELDS TERMINATED BY ','
+    OPTIONALLY ENCLOSED BY '"'
+    LINES TERMINATED BY '\n';
