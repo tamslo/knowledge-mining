@@ -45,11 +45,11 @@ class Analyser():
 
         # get distinct pairs of predicates and objects
         try:
-            query = "SELECT COUNT (DISTINCT predicate, object) AS count FROM cs_join WHERE category = (%s)"
+            query = "SELECT DISTINCT predicate, object AS count FROM cs_join WHERE category = (%s)"
             self.cursor.execute(query, (category,))
         except mysql.connector.Error as err:
             print("Query failed: {}".format(err))
         predicates_objects = 0
         for row in self.cursor:
-            predicates_objects = row["count"]
+            predicates_objects += 1
         result_file.write("\t" + str(predicates_objects) + "\n")

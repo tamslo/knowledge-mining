@@ -12,4 +12,5 @@ LOAD DATA INFILE 'C:/Users/Tamara/OneDrive/Knowledge Mining/project/results/cate
     INTO TABLE categories
     FIELDS TERMINATED BY ','
     OPTIONALLY ENCLOSED BY '"'
-    LINES TERMINATED BY '\n';
+    ESCAPED BY '"'
+    LINES TERMINATED BY '\r\n';
