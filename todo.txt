@@ -6,10 +6,11 @@
 # TODO
 
 - hashes
-- csv is not inserted properly into db (optionally enclosed by doesn't work??)
+- csv is not inserted properly into db (optionally enclosed by doesn't work??) --> shell script
 - what needs to be analysed?
   - no. categories
   - no. subjects per category
   - no. distinct pred/obj pairs
+  - no. properties
 - script for suggestions
 - small test data (select entries with many links to other entries)
