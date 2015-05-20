@@ -13,5 +13,3 @@
   - no. distinct pred/obj pairs
 - script for suggestions
 - small test data (select entries with many links to other entries)
-
--TEST
