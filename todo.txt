@@ -3,11 +3,12 @@
 - refactor: use *config.py for individual configuration again
 - use regex to parse rdf triples
 - csv is not inserted properly into db (optionally enclosed by doesn't work??)
+- bug in DumpConverter [WARNING: could not match line # started 2014-07-25T21:33:17Z with rdf triple regex] -> one empty database entry (try/catch for regex?)
+- hashes
 
 
 # TODO
 
-- hashes
 - what needs to be analysed?
   - no. categories
   - no. subjects per category
@@ -17,4 +18,5 @@
 - small test data (select entries with many links to other entries)
 - small test data (random subset selection)
 - organize workflow (command line params, what are different opts?)
-- bug in DumpConverter [WARNING: could not match line # started 2014-07-25T21:33:17Z with rdf triple regex] -> one empty database entry (try/catch for regex?)
+- analyser: don't print hashes but names to results file
+- analyser: bug? subject and predicate-object-pairs counts are zero for all categories
