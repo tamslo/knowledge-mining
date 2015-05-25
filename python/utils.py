@@ -1,7 +1,9 @@
-DB_USER = 'root'
-DB_PW = '1234'
-DB_HOST = 'localhost'
-DB_NAME = 'knowmin'
+import python.mikconfig as mikconfig
+
+DB_USER = mikconfig.DB_USER
+DB_PW = mikconfig.DB_PW
+DB_HOST = mikconfig.DB_HOST
+DB_NAME = mikconfig.DB_NAME
 
 def get_db_init_config():
     return {

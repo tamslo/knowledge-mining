@@ -1,6 +1,7 @@
 # DONE
 
-
+- add *config.py for incividual configuration
+- use regex to parse rdf triples
 
 
 # TODO
@@ -14,3 +15,4 @@
   - no. properties
 - script for suggestions
 - small test data (select entries with many links to other entries)
+- small test data (random subset selection)

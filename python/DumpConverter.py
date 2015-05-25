@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import csv
 from datetime import datetime
@@ -9,6 +10,13 @@ class DumpConverter():
 
     CATEGORIES = "categories"
     STATEMENTS = "statements"
+
+    triple_rgx = re.compile(
+        r"\s*" + 
+        r"(?P<subject>[^\s]*)\s*" + 
+        r"(?P<predicate>[^\s]*)\s*" + 
+        r"(?P<object>[^\s]*)\s*\."
+        )
 
     # TOTAL_LINES_CATEGORIES = 18731755
     # TOTAL_LINES_STATEMENTS = 33449632
@@ -57,24 +65,22 @@ class DumpConverter():
         message = " Line"
         for line in dump:
             current_line += 1
-            if self.has_content(line):
+            # delete leading and trailing whitespace
+            line = line.strip()
+            if line:
                 entities = self.extract_entities(line)
                 if type == self.CATEGORIES:
                     row = self.get_category_values(entities)
                     self.show_progress(message, current_line, self.TOTAL_LINES_CATEGORIES)
                 elif type == self.STATEMENTS:
-                    row = self.get_statement_values(entities)
+                    row = entities
                     self.show_progress(message, current_line, self.TOTAL_LINES_STATEMENTS)
                 csv_writer.writerow(row)
 
-    def has_content(self, line):
-        return line.startswith("<")
-
     def get_category_values(self, entities):
-        category = entities["object"]
-        resource = entities["subject"]
+        category = entities[2]
+        resource = entities[0]
         return (category, resource)
-
 
     def get_statement_values(self, entities):
         subject = entities["subject"]
@@ -83,29 +89,13 @@ class DumpConverter():
         return (subject, predicate, object)
 
     def extract_entities(self, line):
-        entities = { "subject": "", "predicate": "", "object": ""}
-        current_entity = "subject"
-
-        # first of all delete '/n', '.' and maybe ' '
-        line = line[:-2]
-        if line.endswith(" "):
-            line = line[:-1]
-
-        for char in line:
-            if char == " ":
-                if current_entity == "subject":
-                    current_entity = "predicate"
-                elif current_entity == "predicate":
-                    current_entity = "object"
-                else:
-                    entities[current_entity] += char
-                    continue
-            else:
-                entities[current_entity] += char
-        for entity in entities:
-            if entities[entity].startswith("<") and entities[entity].endswith(">"):
-                entities[entity] = entities[entity][1:-1]
-        return entities
+        # apply regex to line
+        rdf_match = self.triple_rgx.match(line)
+        if rdf_match:
+            return (rdf_match.group("subject"), rdf_match.group("predicate"), rdf_match.group("object"))
+        else:
+            print("DumpConverter.extract_entities: WARNING: could not match line", line, "with rdf triple regex")
+            return ("", "", "")
 
     def show_progress(self, message, current, total):
         progress = float(current) / float(total) * 100

@@ -7,6 +7,8 @@ import python.utils as utils
 from python.DumpConverter import DumpConverter
 from python.Analyser import Analyser
 
+import python.mikconfig as mikconfig
+
 # TODO add Markus' command line params
 
 # writes dumps into csv file
@@ -37,6 +39,7 @@ script = open("sql/categories.sql", encoding="utf8")
 queries = utils.get_queries(script)
 for query in queries:
     try:
+        query = query.replace("${categories_csv_path}", "\"" + mikconfig.categories_csv_path + "\"")
         cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)
@@ -47,6 +50,7 @@ script = open("sql/statements.sql", encoding="utf8")
 queries = utils.get_queries(script)
 for query in queries:
     try:
+        query = query.replace("${statements_csv_path}", "\"" + mikconfig.statements_csv_path + "\"")
         cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)
