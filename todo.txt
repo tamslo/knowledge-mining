@@ -17,3 +17,4 @@
 - small test data (select entries with many links to other entries)
 - small test data (random subset selection)
 - organize workflow (command line params, what are different opts?)
+- bug in DumpConverter [WARNING: could not match line # started 2014-07-25T21:33:17Z with rdf triple regex] -> one empty database entry (try/catch for regex?)
