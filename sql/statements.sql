@@ -5,9 +5,10 @@ SET bulk_insert_buffer_size = 256217728;
 DROP TABLE IF EXISTS statements;
 
 CREATE TABLE statements (
-	subject VARCHAR(127),
-	predicate VARCHAR(127),
-	object VARCHAR(127)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	subject BINARY(16),
+	predicate BINARY(16),
+	object BINARY(16)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOAD DATA LOCAL INFILE ${statements_csv_path}
     INTO TABLE statements

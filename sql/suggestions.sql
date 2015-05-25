@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS suggestions;
 
 CREATE TABLE suggestions (
 	status VARCHAR(7),
-	subject VARCHAR(127),
-	predicate VARCHAR(127),
-	object VARCHAR(127),
+	subject BINARY(16),
+	predicate BINARY(16),
+	object BINARY(16),
 	probability FLOAT) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --TODO

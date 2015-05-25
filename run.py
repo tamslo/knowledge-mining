@@ -11,12 +11,17 @@ import python.mikconfig as mikconfig
 
 # TODO add Markus' command line params
 
-# writes dumps into csv file
 if os.path.exists("results"):
-   shutil.rmtree("results")
+    shutil.rmtree("results")
+
+# prepare data to be used by sql scripts
 converter = DumpConverter()
-converter.execute("categories")
-converter.execute("statements")
+# write dumps into csv files
+converter.convert_categories()
+converter.convert_statements()
+# writing hash translation table to csv file
+converter.write_hashes()
+converter.delete_hashes()
 
 # establish db connection
 mysql_init_config = utils.get_db_init_config()
@@ -51,6 +56,17 @@ queries = utils.get_queries(script)
 for query in queries:
     try:
         query = query.replace("${statements_csv_path}", "\"" + mikconfig.statements_csv_path + "\"")
+        cursor.execute(query)
+    except mysql.connector.Error as err:
+        print(err)
+
+# build hashes table
+print("Building hashes table ...")
+script = open("sql/hashes.sql", encoding="utf8")
+queries = utils.get_queries(script)
+for query in queries:
+    try:
+        query = query.replace("${hashes_csv_path}", "\"" + mikconfig.hashes_csv_path + "\"")
         cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)

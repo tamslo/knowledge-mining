@@ -2,15 +2,15 @@ SET max_heap_table_size = 4294967295;
 SET tmp_table_size = 4294967295;
 SET bulk_insert_buffer_size = 256217728;
 
-DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS hashes;
 
-CREATE TABLE categories(
-    category BINARY(16),
-    resource BINARY(16)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE hashes(
+	hash BINARY(16),
+	entity VARCHAR(127)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOAD DATA LOCAL INFILE ${categories_csv_path}
-    INTO TABLE categories
+LOAD DATA LOCAL INFILE ${hashes_csv_path}
+    INTO TABLE hashes
     FIELDS TERMINATED BY ','
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '"'

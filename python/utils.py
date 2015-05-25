@@ -1,4 +1,7 @@
+import binascii
+
 import python.mikconfig as mikconfig
+
 
 DB_USER = mikconfig.DB_USER
 DB_PW = mikconfig.DB_PW
@@ -41,3 +44,6 @@ def get_queries(script):
         else:
             query += line
     return queries
+
+def mysql_hexlify(binary_string):
+    return "X'" + binascii.hexlify(binary_string).decode('ascii') + "'"

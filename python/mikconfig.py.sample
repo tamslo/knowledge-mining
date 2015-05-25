@@ -6,3 +6,4 @@ DB_NAME = 'knowmin'
 
 categories_csv_path = '/absolute/path/to/repository/./results/categories.csv'
 statements_csv_path = '/absolute/path/to/repository/./results/statements.csv'
+hashes_csv_path = '/absolute/path/to/repository/./results/hashes.csv'

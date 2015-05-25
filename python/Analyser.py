@@ -1,3 +1,4 @@
+import python.utils as utils
 import mysql.connector
 
 class Analyser():
@@ -26,7 +27,7 @@ class Analyser():
         except mysql.connector.Error as err:
             print("Query failed: {}".format(err))
         for row in self.cursor:
-            categories.append(row["category"])
+            categories.append(utils.mysql_hexlify(row["category"]))
         return categories
 
     def analyse_category(self, category, result_file):
