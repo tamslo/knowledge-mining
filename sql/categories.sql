@@ -13,4 +13,4 @@ LOAD DATA INFILE 'C:/Users/Tamara/OneDrive/Knowledge Mining/project/results/cate
     FIELDS TERMINATED BY ','
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '"'
-    LINES TERMINATED BY '\r\n';
+    LINES TERMINATED BY '\n';
