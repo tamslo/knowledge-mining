@@ -7,3 +7,6 @@ results
 dumps/art*
 dumps/map*
 dumps/test*
+
+# database config
+python/mikconfig.py
