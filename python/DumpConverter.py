@@ -20,18 +20,18 @@ class DumpConverter():
         r"(?P<object>[^\s]*)\s*\."
         )
 
-    # TOTAL_LINES_CATEGORIES = 18731755
-    # TOTAL_LINES_STATEMENTS = 33449632
-    #
-    # CATEGORIES_DUMP_PATH = "dumps/article_categories_en.ttl"
-    # STATEMENTS_DUMP_PATH = "dumps/mappingbased_properties_en.ttl"
+    TOTAL_LINES_CATEGORIES = 18731755
+    TOTAL_LINES_STATEMENTS = 33449632
+    
+    CATEGORIES_DUMP_PATH = "dumps/article_categories_en.ttl"
+    STATEMENTS_DUMP_PATH = "dumps/mappingbased_properties_en.ttl"
 
-    # testdata
-    TOTAL_LINES_CATEGORIES = 1000
-    TOTAL_LINES_STATEMENTS = 1000
+    # # testdata
+    # TOTAL_LINES_CATEGORIES = 1000
+    # TOTAL_LINES_STATEMENTS = 1000
 
-    CATEGORIES_DUMP_PATH = "dumps/article_categories_1000"
-    STATEMENTS_DUMP_PATH = "dumps/mappingbased_properties_1000"
+    # CATEGORIES_DUMP_PATH = "dumps/article_categories_1000"
+    # STATEMENTS_DUMP_PATH = "dumps/mappingbased_properties_1000"
 
     CATEGORIES_OUTPUT_FILE_PATH = "results/categories.csv"
     STATEMENTS_OUTPUT_FILE_PATH = "results/statements.csv"
@@ -139,7 +139,7 @@ class DumpConverter():
             self.all_hashesh[object] = object_digest
             return (subject_digest, predicate_digest, object_digest)
         else:
-            print("DumpConverter.extract_entities: WARNING: could not match line", line, "with rdf triple regex")
+            print("\n DumpConverter.extract_entities: WARNING: could not match line", line, "with rdf triple regex\n")
             return ()
 
     def show_progress(self, message, current, total):

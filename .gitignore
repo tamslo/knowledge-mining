@@ -4,9 +4,7 @@ __pycache__
 
 results
 
-dumps/art*
-dumps/map*
-dumps/test*
+dumps/*.ttl
 
 # database config
 python/mikconfig.py
