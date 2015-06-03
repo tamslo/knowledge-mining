@@ -6,12 +6,16 @@
 - bug in DumpConverter [WARNING: could not match line # started 2014-07-25T21:33:17Z with rdf triple regex] -> one empty database entry (try/catch for regex?)
 - hashes
 - get csv into Github (too big; are in OneDrive now)
+- hashes in sql
+- script for suggestions
+- [INVALID] analyser: don't print hashes but names to results file
+- [INVALID] analyser: bug? subject and predicate-object-pairs counts are zero for all categories
+
+
 
 # TODO
 
 - data into remote database
-- hashes in sql
-- script for suggestions
 
 - what needs to be analysed?
   - no. categories
@@ -22,5 +26,3 @@
 - small test data (select entries with many links to other entries)
 - small test data (random subset selection)
 - organize workflow (command line params, what are different opts?)
-- analyser: don't print hashes but names to results file
-- analyser: bug? subject and predicate-object-pairs counts are zero for all categories
