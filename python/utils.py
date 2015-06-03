@@ -1,31 +1,5 @@
 import binascii
 
-import python.mikconfig as mikconfig
-
-
-DB_USER = mikconfig.DB_USER
-DB_PW = mikconfig.DB_PW
-DB_HOST = mikconfig.DB_HOST
-DB_NAME = mikconfig.DB_NAME
-
-def get_db_init_config():
-    return {
-        'user': DB_USER,
-        'password': DB_PW,
-        'host': DB_HOST,
-        'autocommit': True
-    }
-
-def get_db_config():
-    return {
-        'user': DB_USER,
-        'password': DB_PW,
-        'host': DB_HOST,
-        'database': DB_NAME,
-        'autocommit': True
-    }
-
-
 def get_queries(script):
     queries = []
     query = ""

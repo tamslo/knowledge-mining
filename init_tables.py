@@ -10,8 +10,8 @@ import python.mikconfig as mikconfig
 # TODO add Markus' command line params
 
 # establish db connection
-mysql_init_config = utils.get_db_init_config()
-mysql_config = utils.get_db_config()
+mysql_init_config = mikconfig.get_db_init_config()
+mysql_config = mikconfig.get_db_config()
 
 try:
     db_connection = mysql.connector.connect(**mysql_init_config)
@@ -35,6 +35,8 @@ for query in queries:
     except mysql.connector.Error as err:
         print(err)
 
+db_connection = mysql.connector.connect(**mysql_config)
+cursor = db_connection.cursor(buffered = True, dictionary = True)
 # build statements table
 print("Building statements table ...")
 script = open("sql/statements.sql", encoding="utf8")
@@ -46,6 +48,8 @@ for query in queries:
     except mysql.connector.Error as err:
         print(err)
 
+db_connection = mysql.connector.connect(**mysql_config)
+cursor = db_connection.cursor(buffered = True, dictionary = True)
 # build hashes table
 print("Building hashes table ...")
 script = open("sql/hashes.sql", encoding="utf8")
@@ -57,6 +61,8 @@ for query in queries:
     except mysql.connector.Error as err:
         print(err)
 
+db_connection = mysql.connector.connect(**mysql_config)
+cursor = db_connection.cursor(buffered = True, dictionary = True)
 # join categories and statements
 print("Joining categories and statements ...")
 script = open("sql/cs_join.sql", encoding="utf8")
