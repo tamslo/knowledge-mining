@@ -13,6 +13,7 @@ BLOCK1: BEGIN
 	DECLARE total_subjects_of_category 	INT; 
 	DECLARE all_categories			INT;
 	DECLARE	counter				INT;
+	DECLARE	test_counter			INT;
 	DECLARE accept_threshold		DECIMAL(2,2);
 	DECLARE review_threshold		DECIMAL(2,2);
 
@@ -34,6 +35,10 @@ BLOCK1: BEGIN
 	FETCH	all_cat_cursor INTO all_categories;	
 	CLOSE	all_cat_cursor;
 	SET 	counter = 0;
+
+	#####################
+	SET test_counter = 0;
+	#####################
 
 
 	OPEN distinct_category_cursor; 
@@ -61,43 +66,62 @@ BLOCK1: BEGIN
 		FETCH 	total_subjects_cursor 	INTO total_subjects_of_category; 
 		CLOSE 	total_subjects_cursor; 
 
-		INSERT INTO crc_md5 VALUES(c_category_md5, total_subjects_of_category); 
-		
-		IF total_subjects_of_category < 3 THEN
-			ITERATE foreach_category_loop;
-		END IF;
+		#INSERT INTO crc_md5 VALUES(c_category_md5, total_subjects_of_category); 
 		
 
+
+		#############################################################################
+		IF total_subjects_of_category < 20 OR total_subjects_of_category > 100 THEN
+			ITERATE foreach_category_loop;
+		END IF;
+
+		IF test_counter = 100 THEN 
+			CLOSE distinct_category_cursor; 
+			LEAVE foreach_category_loop; 
+		END IF; 
+		
+		SET test_counter = test_counter +1;
+		INSERT INTO crc_md5 VALUES(c_category_md5, total_subjects_of_category);
+		##############################################################################
+
+
+		#IF total_subjects_of_category < 3 THEN
+		#	ITERATE foreach_category_loop;
+		#END IF;
+
+
+		
 		#variable thresholds
 		IF total_subjects_of_category = 3 THEN
 			SET accept_threshold	= 0.6;		
-			SET review_threshold	= 0.3;
+			SET review_threshold	= 0.6;
 		ELSEIF total_subjects_of_category = 4 THEN
 			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET review_threshold	= 0.75;
 		ELSEIF total_subjects_of_category = 5 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.8;		
+			SET review_threshold	= 0.8;
 		ELSEIF total_subjects_of_category = 6 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.83;		
+			SET review_threshold	= 0.83;
 		ELSEIF total_subjects_of_category = 7 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.85;		
+			SET review_threshold	= 0.85;
 		ELSEIF total_subjects_of_category = 8 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.87;		
+			SET review_threshold	= 0.87;
 		ELSEIF total_subjects_of_category = 9 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.88;		
+			SET review_threshold	= 0.88;
 		ELSEIF total_subjects_of_category > 10 AND total_subjects_of_category < 20 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;
+			SET accept_threshold	= 0.9;		
+			SET review_threshold	= 0.8;
+		##########################################
 		ELSEIF total_subjects_of_category > 20 THEN
-			SET accept_threshold	= 0.75;		
-			SET review_threshold	= 0.5;	
+			SET accept_threshold	= 0.97;		
+			SET review_threshold	= 0.9;	
 		END IF;
-
+		###########################################
 
 		BLOCK2: BEGIN 
 			DECLARE no_more_rows2 		BOOLEAN DEFAULT FALSE; 
@@ -158,10 +182,10 @@ BLOCK1: BEGIN
 					get_suggestion_loop:LOOP
 
 						FETCH suggestion_cursor INTO subject_wpo_md5; 
-						IF probability > accept_threshold THEN 
-							INSERT INTO suggestions_md5 VALUES('A', subject_wpo_md5, c_predicate_md5, c_object_md5, probability); 
-						ELSEIF probability > review_threshold THEN 
-							INSERT INTO suggestions_md5 VALUES ('R', subject_wpo_md5, c_predicate_md5, c_object_md5, probability); 
+						IF probability >= accept_threshold THEN 
+							INSERT INTO suggestions_md5 VALUES('A', subject_wpo_md5, c_predicate_md5, c_object_md5, probability, c_category_md5); 
+						ELSEIF probability >= review_threshold THEN 
+							INSERT INTO suggestions_md5 VALUES ('R', subject_wpo_md5, c_predicate_md5, c_object_md5, probability, c_category_md5); 
 						END IF; 
 						
 						IF no_more_rows3 THEN 
