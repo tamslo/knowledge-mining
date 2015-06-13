@@ -6,3 +6,5 @@ csv/
 
 dumps/*.ttl
 
+*.csv
+
