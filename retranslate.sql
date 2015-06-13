@@ -58,76 +58,14 @@ Delimiter $$
 CREATE PROCEDURE translate_suggestions() 
 BLOCK1: BEGIN 
 
-	DECLARE no_more_rows1 boolean DEFAULT FALSE; 
-
-	DECLARE c_category 		varchar(127);
-	DECLARE c_subject 		varchar(127);
-	DECLARE c_predicate 		varchar(127);
-	DECLARE c_object 		varchar(127);
-
-	DECLARE c_category_md5 		BINARY(16);
-	DECLARE c_subject_md5 		BINARY(16);
-	DECLARE c_predicate_md5		BINARY(16);
-	DECLARE c_object_md5 		BINARY(16);
-
-	DECLARE probability 		DECIMAL(2,2);
-	DECLARE status			VARCHAR(7);
-
-	DECLARE counter			INT;
-
-	DECLARE suggestions_md5_cursor CURSOR FOR SELECT * FROM suggestions_md5; 
-
-
-	DECLARE get_category	CURSOR FOR SELECT cleartext FROM translation_table 	WHERE hash = c_category_md5;
-	DECLARE get_subject	CURSOR FOR SELECT cleartext FROM translation_table	WHERE hash = c_subject_md5;
-	DECLARE get_predicate	CURSOR FOR SELECT cleartext FROM translation_table 	WHERE hash = c_predicate_md5;
-	DECLARE get_object	CURSOR FOR SELECT cleartext FROM translation_table 	WHERE hash = c_object_md5;
-
-	DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_more_rows1 = TRUE;
 	
-	SET counter= 0;
-
-
-	OPEN suggestions_md5_cursor; 
-	
-	foreach_line_loop:LOOP 
-		
-		FETCH suggestions_md5_cursor INTO status, c_subject_md5, c_predicate_md5, c_object_md5, probability, c_category_md5; 
-		 
-		IF no_more_rows1 THEN 
-			CLOSE suggestions_md5_cursor; 
-			LEAVE foreach_line_loop; 
-		END IF; 
-	
-		SET counter = counter +1;
-		#SELECT counter;
-
-		OPEN 	get_subject; 
-		#OPEN 	get_predicate;
-		#OPEN 	get_object; 
-		#OPEN 	get_category;
-
-		FETCH 	get_subject 	INTO c_subject; 
-		#FETCH 	get_predicate 	INTO c_predicate; 
-		#FETCH 	get_object 	INTO c_object; 
-		#FETCH 	get_category 	INTO c_category;
-		  
-		CLOSE 	get_subject;
-		#CLOSE 	get_predicate; 
-		#CLOSE 	get_object; 
-		#CLOSE 	get_category; 
-	
-		#SELECT c_subject;
-		
-		#IF counter = 253 THEN
-		#	SELECT c_subject_md5, c_subject;
-		#END IF;
-
-		#INSERT INTO suggestions VALUES(status, c_category, c_predicate, c_object, probability, c_category ); 
-		
-	END LOOP foreach_line_loop; 
-	
-	SELECT counter;
+	INSERT INTO suggestions
+	SELECT sug.status, s2md5.subject, p2md5.predicate, o2md5.object, sug.probability, c2md5.category
+	FROM suggestions_md5 		AS sug
+ 	LEFT JOIN subject_to_md5 	AS s2md5 ON sug.subject_md5 	= s2md5.subject_md5
+ 	LEFT JOIN predicate_to_md5 	AS p2md5 ON sug.predicate_md5 	= p2md5.predicate_md5
+ 	LEFT JOIN object_to_md5 	AS o2md5 ON sug.object_md5 	= o2md5.object_md5
+	LEFT JOIN category_to_md5	AS c2md5 ON sug.category_md5 	= c2md5.category_md5; 
 	
 END BLOCK1$$
 
