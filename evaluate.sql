@@ -1,21 +1,5 @@
-
-DROP TABLE IF EXISTS `crc_md5`;
-CREATE TABLE `crc_md5`(
-	`c_category_md5` char(32),
-	`total_subjects_of_category` int
-);
-
-
-DROP TABLE IF EXISTS `suggestions_md5`;
-CREATE TABLE `suggestions_md5`(
-	`action` char(1),
-	`subject_wpo_md5` char(32),
-	`c_predicate_md5` char(32),
-	`c_object_md5` char(32),
-	`probability` DECIMAL(2,2),
-	`c_category_md5` char(32)
-);
-
+Delete from crc_md5;
+Delete from suggestions_md5;
 
 Drop PROCEDURE IF EXISTS evaluate;
 
@@ -35,16 +19,13 @@ BLOCK1: BEGIN
 
 
 	DECLARE distinct_category_cursor CURSOR FOR 	SELECT DISTINCT category 
-							FROM 		cs_join_original
-							WHERE		subject IS NOT NULL
-							AND		predicate IS NOT NULL
-							AND		object IS NOT NULL;
+							FROM 		cs_join_md5;
 
 	DECLARE total_subjects_cursor 	 CURSOR FOR 	SELECT COUNT(distinct subject) 
-							FROM cs_join_original 
+							FROM cs_join_md5 
 							WHERE category = c_category_md5; 
 
-	DECLARE all_cat_cursor		 CURSOR FOR	SELECT COUNT(DISTINCT category) from cs_join_original;
+	DECLARE all_cat_cursor		 CURSOR FOR	SELECT COUNT(DISTINCT category) from cs_join_md5;
 
 
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_more_rows1 = TRUE;
@@ -68,17 +49,12 @@ BLOCK1: BEGIN
 			CLOSE distinct_category_cursor; 
 			LEAVE foreach_category_loop; 
 		END IF;
-	
-		
 		SET counter = counter +1;
 
-
-		IF no_more_rows1 THEN 
-			CLOSE distinct_category_cursor; 
-			LEAVE foreach_category_loop; 
-		END IF; 
-
-
+		#IF no_more_rows1 THEN 
+		#	CLOSE distinct_category_cursor; 
+		#	LEAVE foreach_category_loop; 
+		#END IF; 
 
 		FETCH	distinct_category_cursor INTO c_category_md5; 
 		OPEN 	total_subjects_cursor; 
@@ -90,7 +66,7 @@ BLOCK1: BEGIN
 
 
 		#############################################################################
-		IF total_subjects_of_category < 20 OR total_subjects_of_category > 100 THEN
+		IF total_subjects_of_category < 50 OR total_subjects_of_category > 100 THEN
 			ITERATE foreach_category_loop;
 		END IF;
 
@@ -148,15 +124,15 @@ BLOCK1: BEGIN
 			DECLARE c_object_md5 		CHAR(32); 
 			DECLARE probability 		DECIMAL(2,2);
 			DECLARE concerned_subjects 	INT; 
-			DECLARE dist_pred_obj_cursor CURSOR FOR SELECT DISTINCT predicate_md5, object_md5 
-								FROM cs_join_original 
+			DECLARE dist_pred_obj_cursor CURSOR FOR SELECT DISTINCT predicate, object 
+								FROM cs_join_md5 
 								WHERE category = c_category_md5; 
 
 			DECLARE concerned_subj_count CURSOR FOR SELECT COUNT(distinct subject) 
-								FROM cs_join_original 
+								FROM cs_join_md5 
 								WHERE category		= c_category_md5 
-								AND predicate_md5	= c_predicate_md5 
-								AND object_md5		= c_object_md5; 
+								AND predicate		= c_predicate_md5 
+								AND object		= c_object_md5; 
 
 			DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_more_rows2=TRUE; 
 			
@@ -186,10 +162,10 @@ BLOCK1: BEGIN
 					DECLARE subject_wpo_md5 CHAR(32); 
 
 					DECLARE suggestion_cursor CURSOR FOR 	SELECT DISTINCT(subject) 
-										FROM cs_join_original 
-										WHERE 	category_md5	= c_category_md5 
-										AND 	predicate_md5 	!= c_predicate_md5 
-										AND 	object_md5 	!= c_object_md5; 
+										FROM 	cs_join_md5 
+										WHERE 	category	= c_category_md5 
+										AND 	predicate 	!= c_predicate_md5 
+										AND 	object	 	!= c_object_md5; 
 
 					DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_more_rows3=TRUE; 
 					
@@ -218,3 +194,5 @@ BLOCK1: BEGIN
 END BLOCK1$$
 
 Delimiter ;
+
+CALL evaluate;
