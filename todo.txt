@@ -25,4 +25,4 @@
   
 - small test data (select entries with many links to other entries)
 - small test data (random subset selection)
-- organize workflow (command line params, what are different opts?)
+- adjust retranslate, translate, precalc_crc (purgery)
