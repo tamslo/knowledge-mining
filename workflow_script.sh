@@ -10,7 +10,7 @@ fi
 source settings.sh
 
 # write dumps to database
-cat csv_to_db.sql | sed -e "s:categories_csv_file_path:\"${PWD}/dumps/categories_en${IDENTIFIER}.csv\":g;s:statements_csv_file_path:\"${PWD}/dumps/mappingbased_properties_en${IDENTIFIER}.csv\":g" | mysql --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --database="$MYSQL_DATABASE"
+cat csv_to_db.sql | sed -e "s:categories_csv_file_path:\"${PWD}/dumps/categories_en${IDENTIFIER}.csv\":g;s:statements_csv_file_path:\"${PWD}/dumps/mappingbased_properties_en${IDENTIFIER}.csv\":g" | mysql --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --database="$MYSQL_DATABASE" --local-infile
 
 # generate hashes
 cat hash.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}"
