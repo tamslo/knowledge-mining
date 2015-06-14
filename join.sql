@@ -1,16 +1,18 @@
+DROP TABLE IF EXISTS `cs_join_md5`;
 
-DROP TABLE IF EXISTS `cs_join_original`;
-
-CREATE TABLE `cs_join_original`(
-  `category` CHAR(32),
-  `subject` CHAR(32),
-  `predicate` CHAR(32),
-  `object` CHAR(32)
+CREATE TABLE `cs_join_md5` (
+	category	CHAR(32),
+	subject		CHAR(32),
+	predicate	CHAR(32),
+	object		CHAR(32)
 );
 
+INSERT INTO 		cs_join_md5 
+	SELECT		c.category, st.subject, st.predicate, st.object 
+	FROM		categories_md5 AS c
+	INNER JOIN 	statements_md5 AS st
+	ON 		c.resource = st.subject;
 
-INSERT INTO `cs_join_original`
-  SELECT c.category, st.subject, st.predicate, st.object
-  FROM `categories_to_md5` AS c
-  RIGHT OUTER JOIN `statements_to_md5` AS st
-  ON c.resource = st.subject;
+CREATE INDEX idx_cs_join_md5_category on cs_join_md5(category);
+CREATE INDEX idx_cs_join_md5_cpo on cs_join_md5(category, predicate, object);
+

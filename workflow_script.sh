@@ -17,7 +17,6 @@ cat hash.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --dat
 
 ## join
 cat join.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}"
-cat join_resources_dropped_from_categories.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}"
 
 ## evaluate
 cat evaluate.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}"
