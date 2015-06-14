@@ -13,3 +13,7 @@ It is recommended to ```source settings.sh``` also on your command line. This wa
 * join.sql
 * (can be omitted) join_resources_dropped_from_categories.sql
 * evaluate.sql
+
+## Testsets
+
+* execute testsets.sql and then manually move generated test set to other database
