@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0)
+cd $(dirname $0)a
 
 if [[ ! -f settings.sh ]] ; then
   echo "please copy settings.sh.template to settings.sh and adjust the parameters to your needs"
@@ -39,6 +39,7 @@ echo
 echo 'Execute evaluation'
 time cat evaluate.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" ${MYSQL_HOST_ARG} ${MYSQL_PORT_ARG}
 
+<<<<<<< Updated upstream
 # retranslate
 echo
 echo 'Retranslate crc_md5 to crc_clear and suggestions_md5 to suggestions'
@@ -51,3 +52,15 @@ time cat stats.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}"
 
 # testsets
 # time cat testsets.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" ${MYSQL_HOST_ARG} ${MYSQL_PORT_ARG}
+=======
+# retranslation
+echo
+echo 'Retranslate crc_md5 to crc_clear and suggestions_md5 to suggestions'
+time cat retranslate_crc_and_suggestions.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" "${MYSQL_HOST_ARG}" "${MYSQL_PORT_ARG}"
+
+# calculate statistics
+#echo
+#echo 'Calculate statistics'
+#time cat raw_statistics.sql | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" "${MYSQL_HOST_ARG}" "${MYSQL_PORT_ARG}"
+
+>>>>>>> Stashed changes
