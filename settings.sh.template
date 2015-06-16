@@ -1,0 +1,12 @@
+IDENTIFIER=''
+#'' '_1000' '_100000'
+
+MYSQL_USER=root
+MYSQL_PASSWORD=secret
+MYSQL_DATABASE="knowmin${IDENTIFIER}"
+
+# uncomment and use IDENTIFIER='' to work on the remote database
+#   also set MYSQL_USER=knowmin and PASSWORD=...
+# else you will work locally
+MYSQL_HOST_ARG="--host=141.89.225.50"
+MYSQL_PORT_ARG="--port=3306"

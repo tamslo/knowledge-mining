@@ -1,7 +1,5 @@
 DELIMITER //
 
-# queried tables should be cs_join_md5 in the end
-
 DROP PROCEDURE IF EXISTS CalculateStatistics;
 
 # creates rudimentary stats (#categories, #subjects, avg #subjects in categories)
@@ -31,22 +29,22 @@ CREATE PROCEDURE CalculateStatistics()
 		SELECT count(*) INTO amount_categories
 		FROM (
 			SELECT DISTINCT category
-			FROM cs_join_original) dist_cats;
+			FROM cs_join_md5) dist_cats;
 
 		SELECT count(*) INTO amount_subjects
 		FROM (
 			SELECT DISTINCT subject
-			FROM cs_join_original) dist_subs;
+			FROM cs_join_md5) dist_subs;
 
 		SELECT count(*) INTO amount_predicates
 		FROM (
 			SELECT DISTINCT predicate
-			FROM cs_join_original) dist_preds;
+			FROM cs_join_md5) dist_preds;
 
 		SELECT count(*) INTO amount_objects
 		FROM (
 			SELECT DISTINCT object
-			FROM cs_join_original) dist_objs;
+			FROM cs_join_md5) dist_objs;
 
 		SET average_subjectsInCategories = amount_subjects / amount_categories;
 		SET average_categoriesPerSubject = amount_categories / amount_subjects;
@@ -54,9 +52,8 @@ CREATE PROCEDURE CalculateStatistics()
 		SELECT AVG(subcounts) INTO average_statementsPerSubject
 		FROM (
 			SELECT count(subject) AS subcounts
-			FROM cs_join_original
+			FROM cs_join_md5
 			GROUP BY subject) counts;
-
 
 		INSERT INTO stats
 		VALUES ("cs_join", amount_categories, amount_subjects, 
