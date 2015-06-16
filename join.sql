@@ -5,7 +5,7 @@ CREATE TABLE `cs_join_md5` (
 	subject		CHAR(32),
 	predicate	CHAR(32),
 	object		CHAR(32)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO 		cs_join_md5 
 	SELECT		c.category, st.subject, st.predicate, st.object 
