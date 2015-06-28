@@ -55,7 +55,6 @@ CREATE PROCEDURE CalculateStatistics()
 			FROM cs_join_md5
 			GROUP BY subject) counts;
 
-
 		INSERT INTO stats
 		VALUES ("cs_join", amount_categories, amount_subjects, 
 			amount_predicates, amount_objects, average_subjectsIncategories,

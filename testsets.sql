@@ -44,8 +44,6 @@ CREATE PROCEDURE CreateTestSet1000Categories()
 		INNER JOIN statements_md5
 		ON statements_md5.subject = categories.resource;
 
-
-
 	END //
 
 DELIMITER ;
