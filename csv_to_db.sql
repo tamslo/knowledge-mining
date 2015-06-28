@@ -16,6 +16,6 @@ CREATE TABLE `statements_original` (
   `predicate` 	varchar(1000) NOT NULL,
   `object` 	varchar(1000) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+# Change "categories_csv_file_path" and "statements_csv_file_path" to absolute path on your machine
 #LOAD DATA LOCAL INFILE "categories_csv_file_path" INTO TABLE categories_original FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
 #LOAD DATA LOCAL INFILE "statements_csv_file_path" INTO TABLE statements_original FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
