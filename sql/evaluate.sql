@@ -7,7 +7,8 @@ CREATE TABLE 'suggestions_md5' (
 	'predicate_md5' CHAR(32), 
 	'object_md5' 	CHAR(32),
 	'probability'	float, 
-	'category_md5'	CHAR(32)
+	'category_md5'	CHAR(32),
+	'inverted'	tinyint(1)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

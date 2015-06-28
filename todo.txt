@@ -1,29 +1,23 @@
-# DONE
+s# DONE
 
-- refactor: use *config.py for individual configuration again
-- use regex to parse rdf triples
-- csv is not inserted properly into db (optionally enclosed by doesn't work??)
-- bug in DumpConverter [WARNING: could not match line # started 2014-07-25T21:33:17Z with rdf triple regex] -> one empty database entry (try/catch for regex?)
-- hashes
-- get csv into Github (too big; are in OneDrive now)
-- hashes in sql
-- script for suggestions
-- [INVALID] analyser: don't print hashes but names to results file
-- [INVALID] analyser: bug? subject and predicate-object-pairs counts are zero for all categories
 
 
 
 # TODO
 
-- update README (dumps, csv, all sql scripts)
+- push to master
 
-- data into remote database
+- evaluation: precision & recall
 
-- what needs to be analysed?
-  - no. categories
-  - no. subjects per category
-  - no. distinct pred/obj pairs
-  - no. properties
-  
-- small test data (select entries with many links to other entries)
-- small test data (random subset selection)
+- complete SQL scripts
+	- own table for probability
+	- combine invertet and not inverted joins
+	- rename evaluation to suggentions and adapt probabilities
+
+- update retranslation (adapt names)
+
+- add column inverted to suggestions
+
+- run all scripts
+
+- update README

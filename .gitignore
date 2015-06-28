@@ -1,6 +1,3 @@
 *~
 
-csv/
-*.csv
-
-/settings.sh
+data/
