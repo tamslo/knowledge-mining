@@ -20,7 +20,7 @@ END BLOCK1$$
 
 Delimiter ;
 
-CALL translate_crc;
+#CALL translate_crc;
 
 
 #########################################################
@@ -47,4 +47,4 @@ END BLOCK1$$
 
 Delimiter ;
 
-CALL translate_suggestions;
+#CALL translate_suggestions;

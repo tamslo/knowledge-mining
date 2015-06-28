@@ -15,4 +15,4 @@ INSERT INTO 		cs_join_md5
 
 CREATE INDEX idx_cs_join_md5_category on cs_join_md5(category);
 CREATE INDEX idx_cs_join_md5_cpo on cs_join_md5(category, predicate, object);
-
+CREATE INDEX idx_cs_join_md5_subject on cs_join_md5(subject);

@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS raw_stats;
 CREATE TABLE raw_stats (
 	query CHAR(32),
 	result INT
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ####################
 SELECT COUNT(DISTINCT resource) INTO @num_resources FROM categories_md5;
