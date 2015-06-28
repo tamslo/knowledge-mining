@@ -15,13 +15,6 @@ INSERT INTO 		cat_wo_stat
 CREATE INDEX cws_resource on cat_wo_stat(resource);
 CREATE INDEX cws_category on cat_wo_stat(category);
 
-
-
-
-
-
-
-
 ### cleartext version for understanding
 DROP TABLE IF EXISTS `cat_wo_stat_clear`;
 CREATE TABLE `cat_wo_stat_clear` (
@@ -34,13 +27,6 @@ INSERT INTO cat_wo_stat_clear
 	FROM	cat_wo_stat AS cws
 	LEFT JOIN resource_to_md5 AS r2md5 ON cws.resource = r2md5.resource_md5
 	LEFT JOIN category_to_md5 AS c2md5 ON cws.category = c2md5.category_md5;
-
-
-
-
-
-
-
 
 ### and join those with statements on object (-> insert object as subject and otherwise == inverse)
 DROP TABLE IF EXISTS `inv_object_join_md5`;

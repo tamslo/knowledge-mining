@@ -1,5 +1,16 @@
-Delete from crc_md5;
-Delete from suggestions_md5;
+DROP TABLE IF EXISTS 'suggestions_md5';
+
+
+CREATE TABLE 'suggestions_md5' (  
+	'status' 	varchar(7), 
+	'subject_md5' 	CHAR(32), 
+	'predicate_md5' CHAR(32), 
+	'object_md5' 	CHAR(32),
+	'probability'	float, 
+	'category_md5'	CHAR(32)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 Drop PROCEDURE IF EXISTS evaluate;
 

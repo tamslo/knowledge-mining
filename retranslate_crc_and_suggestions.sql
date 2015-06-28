@@ -1,4 +1,26 @@
 
+DROP TABLE IF EXISTS 'suggestions_clear';
+CREATE TABLE 'suggestions_clear' (
+	'status' 	VARCHAR(7),
+	'subject' 	VARCHAR(1000),
+	'predicate' 	VARCHAR(1000),
+	'object' 	VARCHAR(1000),
+	'probability '	FLOAT,
+	'category'	VARCHAR(1000)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS 'subjects_per_category_count_clear';
+CREATE TABLE 'subjects_per_category_count_clear' (  
+	'category'		VARCHAR(1000),
+	'resource_count'	INT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+
+
 
 #################################################
 #		TRANSLATE CRC_MD5		#
