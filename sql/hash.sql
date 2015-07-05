@@ -5,6 +5,12 @@ CREATE TABLE `categories_md5` (
   `category_md5` char(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO categories_md5 SELECT md5(resource),md5(category) FROM  categories_original;
+
+ALTER TABLE `categories_md5` 
+ADD INDEX `idx_categories_md5_resource` (`resource_md5` ASC),
+ADD INDEX `idx_categories_md5_category` (`category_md5` ASC);
+
 DROP TABLE IF EXISTS `statements_md5`;
 CREATE TABLE `statements_md5` (
   `subject_md5`		char(32) NOT NULL,
@@ -12,18 +18,12 @@ CREATE TABLE `statements_md5` (
   `object_md5`		char(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO categories_md5 SELECT md5(resource),md5(category) FROM  categories_original;
-
-ALTER TABLE `categories_md5` 
-ADD INDEX `idx_categories_resource` (`resource_md5` ASC),
-ADD INDEX `idx_categories_category` (`category_md5` ASC);
-
 INSERT INTO statements_md5 SELECT md5(subject), md5(predicate), md5(object) FROM statements_original;
 
 ALTER TABLE `statements_md5` 
-ADD INDEX `idx_statements_subject` 	(`subject_md5` ASC),
-ADD INDEX `idx_statements_predicate` 	(`predicate_md5` ASC),
-ADD INDEX `idx_statements_object` 	(`object_md5` ASC);
+ADD INDEX `idx_statements_md5_subject` (`subject_md5` ASC),
+ADD INDEX `idx_statements_md5_predicate` (`predicate_md5` ASC),
+ADD INDEX `idx_statements_md5_object` (`object_md5` ASC);
 
 # TRANSLATION TABLES
 DROP TABLE IF EXISTS `category_translation`;
@@ -65,3 +65,28 @@ CREATE TABLE `predicate_translation` (
   PRIMARY KEY 		(`predicate_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT IGNORE INTO predicate_translation SELECT predicate,md5(predicate) FROM statements_original;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DROP TABLE IF EXISTS `all_resource_translation`;
+CREATE TABLE `all_resource_translation` (
+  `resource` 		varchar(1000) NOT NULL,
+  `resource_md5` 	char(32) NOT NULL,
+  PRIMARY KEY 		(`resource_md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT IGNORE INTO all_resource_translation SELECT * FROM subject_translation;
+INSERT IGNORE INTO all_resource_translation SELECT * FROM object_translation;
+INSERT IGNORE INTO all_resource_translation SELECT * FROM resource_translation;
