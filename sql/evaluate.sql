@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `suggestions_md5`;
-CREATE TABLE `suggestions_md5` (  
+DROP TABLE IF EXISTS `MK_TEST_suggestions_md5`;
+CREATE TABLE `MK_TEST_suggestions_md5` (  
 	`status` 	varchar(7), 
 	`subject_md5` 	CHAR(32), 
 	`predicate_md5` CHAR(32), 
@@ -11,6 +11,27 @@ CREATE TABLE `suggestions_md5` (
 
 
 
+INSERT INTO MK_TEST_suggestions_md5
+	SELECT "A" AS status, ca.resource_md5 AS subject_md5, pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
+    	FROM
+    		(SELECT pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
+    			FROM 	MK_TEST_property_probability_md5 AS pp
+    			WHERE	pp.probability        >= 0.9
+        		AND	pp.probability        < 1) AS pp
+    
+	JOIN 		MK_TEST_categories_md5 	AS ca 	ON pp.category_md5 	= ca.category_md5
+
+	LEFT JOIN 	MK_TEST_cs_join_md5 	AS st 	ON st.subject_md5 	= ca.resource_md5 
+							AND st.predicate_md5	= pp.predicate_md5 
+							AND st.object_md5 	= pp.object_md5
+    	WHERE st.predicate_md5 IS NULL 
+	AND st.object_md5 IS NULL;
+
+
+
+
+
+/*
 INSERT INTO suggestions_md5
 	SELECT 		"A", cs.subject_md5, cs.predicate_md5, cs.object_md5, pp.probability, cs.category_md5, cs.inverted
 	FROM		cs_join_md5 AS cs
@@ -21,7 +42,7 @@ INSERT INTO suggestions_md5
 	AND		spc.subject_count	>= 20
 	AND		pp.probability		>= 0.97
 	AND		pp.probability		< 1;
-
+*/
 
 
 
