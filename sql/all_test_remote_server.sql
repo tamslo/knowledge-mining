@@ -102,6 +102,7 @@ INSERT IGNORE INTO MK_TEST_all_rso_translation SELECT redirect,md5(redirect)  FR
 #################################################################################################################################################################################
 
 DELETE FROM MK_TEST_statements_md5 WHERE subject_md5 IN(SELECT resource_md5 FROM MK_TEST_redirects_md5);
+DELETE FROM MK_TEST_categories_md5 WHERE resource_md5 IN(SELECT resource_md5 FROM MK_TEST_redirects_md5);
 
 #################################################################################################################################################################################
 DROP TABLE IF EXISTS `MK_TEST_cs_join_md5`;
