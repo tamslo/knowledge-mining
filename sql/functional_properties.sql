@@ -46,11 +46,12 @@ FROM
 	(SELECT predicate_md5, AVG(count) AS avg
 	FROM
 		(SELECT subject_md5, predicate_md5, COUNT(predicate_md5) AS count
-		FROM statements_md5
+		FROM TS_TEST_statements_md5
 		GROUP BY subject_md5, predicate_md5) counts
 	GROUP BY predicate_md5) avgs
 	INNER JOIN TS_TEST_are_properties_functional_md5 fp
-	ON avgs.predicate_md5 = fp.predicate_md5;
+	ON avgs.predicate_md5 = fp.predicate_md5
+ORDER BY avg;
 
 UPDATE TS_TEST_property_stats_md5
 SET considered_functional = 1
