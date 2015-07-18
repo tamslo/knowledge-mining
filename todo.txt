@@ -1,23 +1,10 @@
-s# DONE
+# DONE
 
 
 
 
 # TODO
 
-- push to master
-
-- evaluation: precision & recall
-
-- complete SQL scripts
-	- own table for probability
-	- combine invertet and not inverted joins
-	- rename evaluation to suggentions and adapt probabilities
-
-- update retranslation (adapt names)
-
-- add column inverted to suggestions
-
-- run all scripts
+- workflow.sql: not only delete functional properties from suggestions but write them into new table for review
 
 - update README

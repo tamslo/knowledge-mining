@@ -306,6 +306,8 @@ SET considered_functional = 1
 WHERE is_functional = 1
 OR predicate_avg = 1;
 
+# TODO: Not only delete but write into another table for review
+
 # PLEASE REVIEW !!!
 
 DELETE FROM MK_TEST_suggestions_md5
