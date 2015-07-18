@@ -4,6 +4,7 @@ SET tmp_table_size = 4294967295;
 SET bulk_insert_buffer_size = 256217728;
 
 # Tables to import data
+
 DROP TABLE IF EXISTS `MK_TEST_categories_original`;
 CREATE TABLE `MK_TEST_categories_original` (
   `resource` varchar(1000) NOT NULL,
@@ -15,22 +16,33 @@ CREATE TABLE `MK_TEST_statements_original` (
   `predicate` 	varchar(1000) NOT NULL,
   `object` 	varchar(1000) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+# Tables for suggestion cleansing
+
 DROP TABLE IF EXISTS `MK_TEST_redirects_original`;
 CREATE TABLE `MK_TEST_redirects_original` (
   `resource` varchar(1000) NOT NULL,
   `redirect` varchar(1000) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `MK_TEST_functional_properties`;
+CREATE TABLE `MK_TEST_functional_properties` (
+  `predicate`	varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 LOAD DATA LOCAL INFILE '~/Desktop/knowmin/KnowMin-MIK/sql/test_categories.csv' INTO TABLE MK_TEST_categories_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INFILE '~/Desktop/knowmin/KnowMin-MIK/sql/test_statements.csv' INTO TABLE MK_TEST_statements_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INFILE '~/Desktop/knowmin/KnowMin-MIK/sql/test_redirects.csv' INTO TABLE MK_TEST_redirects_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/KnowMin/repo/data/func_prop.csv' INTO TABLE MK_TEST_functional_properties FIELDS TERMINATED BY ',' ENCLOSED BY '\"' ESCAPED BY '\\' LINES TERMINATED BY '\n';
 
 #################################################################################################################################################################################
 
-DELETE FROM MK_TEST_categories_original WHERE resource like 'http://dbpedia.org/resource/List\_of\_%';
-DELETE FROM MK_TEST_statements_original WHERE subject like 'http://dbpedia.org/resource/List\_of\_%';
+# Clean data from lists
+
+DELETE FROM MK_TEST_categories_original WHERE resource LIKE 'http://dbpedia.org/resource/List\_of\_%';
+DELETE FROM MK_TEST_statements_original WHERE subject LIKE 'http://dbpedia.org/resource/List\_of\_%';
 
 #################################################################################################################################################################################
 
+# Translate tables to md5 and create tables for re-translation
 
 DROP TABLE IF EXISTS `MK_TEST_categories_md5`;
 CREATE TABLE `MK_TEST_categories_md5` (
@@ -101,10 +113,15 @@ INSERT IGNORE INTO MK_TEST_all_rso_translation SELECT redirect,md5(redirect)  FR
 
 #################################################################################################################################################################################
 
+# Clean data from redirects
+
 DELETE FROM MK_TEST_statements_md5 WHERE subject_md5 IN(SELECT resource_md5 FROM MK_TEST_redirects_md5);
 DELETE FROM MK_TEST_categories_md5 WHERE resource_md5 IN(SELECT resource_md5 FROM MK_TEST_redirects_md5);
 
 #################################################################################################################################################################################
+
+# Join categories and statements
+
 DROP TABLE IF EXISTS `MK_TEST_cs_join_md5`;
 CREATE TABLE `MK_TEST_cs_join_md5` (
 	`category_md5`	CHAR(32),
@@ -149,6 +166,7 @@ CREATE INDEX `idx_cs_join_md5_subject` 	on `MK_TEST_cs_join_md5`(`subject_md5`);
 
 #################################################################################################################################################################################
 
+# Precomputation of intermediate results
 
 DROP TABLE IF EXISTS `MK_TEST_subjects_per_category_count_md5`;
 CREATE TABLE `MK_TEST_subjects_per_category_count_md5`(
@@ -203,6 +221,7 @@ CREATE INDEX `idx_pp_cpo` 	ON `MK_TEST_property_probability_md5`(`category_md5`,
 
 #################################################################################################################################################################################
 
+# Create suggestions
 
 DROP TABLE IF EXISTS `MK_TEST_suggestions_md5`;
 CREATE TABLE `MK_TEST_suggestions_md5` (  
@@ -236,9 +255,66 @@ INSERT INTO MK_TEST_suggestions_md5
 
 #################################################################################################################################################################################
 
+# Clean suggestions from selflinks
+
 DELETE FROM MK_TEST_suggestions_md5 WHERE subject_md5 = object_md5;
 
 #################################################################################################################################################################################
+
+# Clean suggestions from functional properties
+
+DROP TABLE IF EXISTS `MK_TEST_are_properties_functional_md5`;
+CREATE TABLE `MK_TEST_are_properties_functional_md5` (
+  `predicate_md5`	char(32) NOT NULL,
+  `is_functional`	tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO MK_TEST_are_properties_functional_md5
+SELECT md5(predicate), 1
+FROM MK_TEST_functional_properties;
+
+
+INSERT INTO MK_TEST_are_properties_functional_md5
+SELECT DISTINCT predicate_md5, 0
+FROM predicate_translation
+WHERE predicate_md5
+NOT IN (SELECT DISTINCT predicate_md5 FROM MK_TEST_functional_properties_md5);
+
+DROP TABLE IF EXISTS `MK_TEST_property_stats_md5`;
+CREATE TABLE `MK_TEST_property_stats_md5` (
+  `predicate_md5` 			varchar(1000) NOT NULL,
+  `predicate_avg`			double NOT NULL,
+  `is_functional`			tinyint(1) NOT NULL,
+  `considered_functional`	tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO MK_TEST_property_stats_md5
+SELECT avgs.predicate_md5, avg, is_functional, 0
+FROM
+	(SELECT predicate_md5, AVG(count) AS avg
+	FROM
+		(SELECT subject_md5, predicate_md5, COUNT(predicate_md5) AS count
+		FROM MK_TEST_statements_md5
+		GROUP BY subject_md5, predicate_md5) counts
+	GROUP BY predicate_md5) avgs
+	INNER JOIN MK_TEST_are_properties_functional_md5 fp
+	ON avgs.predicate_md5 = fp.predicate_md5
+ORDER BY avg;
+
+UPDATE MK_TEST_property_stats_md5
+SET considered_functional = 1
+WHERE is_functional = 1
+OR predicate_avg = 1;
+
+# PLEASE REVIEW !!!
+
+DELETE FROM MK_TEST_suggestions_md5
+WHERE subject_md5, predicate_md5 IN (SELECT subject_md5, predicate_md5 FROM MK_TEST_statements_md5)
+AND predicate_md5 IN (SELECT predicate_md5 FROM MK_TEST_property_stats_md5 WHERE considered_functional = 1);
+
+#################################################################################################################################################################################
+
+# Re-translate suggestions
 
 DROP TABLE IF EXISTS `MK_TEST_suggestions_clear`;
 CREATE TABLE `MK_TEST_suggestions_clear` (
@@ -263,6 +339,7 @@ INSERT INTO MK_TEST_suggestions_clear
 
 #################################################################################################################################################################################
 
+# Re-translate other tables to reconstruct results
 
 DROP TABLE IF EXISTS `MK_TEST_subjects_per_category_count_clear`;
 CREATE TABLE `MK_TEST_subjects_per_category_count_clear` (  
@@ -321,4 +398,30 @@ INSERT INTO MK_TEST_cat_wo_stat_clear
 	FROM		MK_TEST_cat_wo_stat_md5	  AS cws
 	LEFT JOIN 	MK_TEST_all_rso_translation	AS r2md5 ON cws.resource_md5 = r2md5.resource_md5
 	LEFT JOIN 	MK_TEST_category_translation	AS c2md5 ON cws.category_md5 = c2md5.category_md5;
+
+DROP TABLE IF EXISTS `MK_TEST_are_properties_functional_clear`;
+CREATE TABLE `MK_TEST_are_properties_functional_clear` (
+  `predicate`		varchar(1000) NOT NULL,
+  `is_functional`	tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO MK_TEST_are_properties_functional_clear
+SELECT trans.predicate, is_functional
+FROM MK_TEST_are_properties_functional_md5 md5
+INNER JOIN predicate_translation trans
+ON md5.predicate_md5 = trans.predicate_md5;
+
+DROP TABLE IF EXISTS `MK_TEST_property_stats_clear`;
+CREATE TABLE `MK_TEST_property_stats_clear` (
+  `predicate`				varchar(1000) NOT NULL,
+  `predicate_avg`			float NOT NULL,
+  `is_functional`			tinyint(1) NOT NULL,
+  `considered_functional`	tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO MK_TEST_property_stats_clear
+SELECT trans.predicate, predicate_avg, is_functional, considered_functional
+FROM MK_TEST_property_stats_md5 md5
+INNER JOIN predicate_translation trans
+ON md5.predicate_md5 = trans.predicate_md5;
 
