@@ -22,30 +22,26 @@ INSERT INTO TS_TEST_are_properties_functional_md5
 SELECT md5(predicate), 1
 FROM TS_TEST_functional_properties;
 
-# PROBLEM: REALLY FUNNY COUNTS OF DISTINCT PREDICATES
-# SO PROBABLY NOT WORKING SO FAR
 
 INSERT INTO TS_TEST_are_properties_functional_md5
 SELECT DISTINCT predicate_md5, 0
-FROM TS_TEST_statements_md5
+FROM predicate_translation
 WHERE predicate_md5
-NOT IN (SELECT DISTINCT predicate_md5 FROM TS_TEST_are_properties_functional_md5);
+NOT IN (SELECT DISTINCT predicate_md5 FROM TS_TEST_functional_properties_md5);
 
 
 # stats for usage of properties
 
 DROP TABLE IF EXISTS `TS_TEST_property_stats_md5`;
 CREATE TABLE `TS_TEST_property_stats_md5` (
-  `predicate_md5` 	varchar(1000) NOT NULL,
-  `predicate_avg`	float NOT NULL,
-  `is_functional`	tinyint(1) NOT NULL 	
+  `predicate_md5` 			varchar(1000) NOT NULL,
+  `predicate_avg`			double NOT NULL,
+  `is_functional`			tinyint(1) NOT NULL,
+  `considered_functional`	tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-# !!! NOT WORKING SO FAR, IN PROGRESS !!!
-
 INSERT INTO TS_TEST_property_stats_md5
-SELECT avgs.predicate_md5, avg, is_functional
+SELECT avgs.predicate_md5, avg, is_functional, 0
 FROM
 	(SELECT predicate_md5, AVG(count) AS avg
 	FROM
@@ -55,3 +51,8 @@ FROM
 	GROUP BY predicate_md5) avgs
 	INNER JOIN TS_TEST_are_properties_functional_md5 fp
 	ON avgs.predicate_md5 = fp.predicate_md5;
+
+UPDATE TS_TEST_property_stats_md5
+SET considered_functional = 1
+WHERE is_functional = 1
+OR predicate_avg = 1;
