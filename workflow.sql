@@ -313,8 +313,8 @@ OR predicate_avg = 1;
 DELETE FROM TS_OTHER_TEST_suggestions_md5
 WHERE EXISTS (SELECT * FROM TS_OTHER_TEST_statements_md5 st
 	WHERE TS_OTHER_TEST_suggestions_md5.subject_md5 = st.subject_md5
-	AND TS_OTHER_TEST_suggestions_md5.predicate_md5 = st.predicate_md5
-	AND TS_OTHER_TEST_suggestions_md5.predicate_md5 IN (SELECT predicate_md5 FROM TS_OTHER_TEST_property_stats_md5 WHERE considered_functional = 1));
+	AND TS_OTHER_TEST_suggestions_md5.predicate_md5 = st.predicate_md5)
+AND TS_OTHER_TEST_suggestions_md5.predicate_md5 IN (SELECT predicate_md5 FROM TS_OTHER_TEST_property_stats_md5 WHERE considered_functional = 1);
 
 #################################################################################################################################################################################
 
