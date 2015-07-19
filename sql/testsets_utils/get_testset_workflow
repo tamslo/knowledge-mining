@@ -11,7 +11,7 @@ sed -i 1d test_statements.csv
 
 # run all_test_remote.sql
 
-mysql --host=141.89.225.50 --port=3306 --database=knowmin --user=knowmin --password='bQRr2_#"XA3v8h-S' --local-infile < all_test_remote_server.sql
+mysql --host=141.89.225.50 --port=3306 --database=knowmin --user=knowmin --password='bQRr2_#"XA3v8h-S' --local-infile < workflow.sql
 
 # count stuff
 
