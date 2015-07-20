@@ -28,10 +28,10 @@ CREATE TABLE `TS_OTHER_TEST_functional_properties` (
   `predicate`	varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOAD DATA LOCAL INFILE '~/KnowMin/repo/data/test_categories.csv' INTO TABLE TS_OTHER_TEST_categories_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
-LOAD DATA LOCAL INFILE '~/KnowMin/repo/data/test_statements.csv' INTO TABLE TS_OTHER_TEST_statements_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
-LOAD DATA LOCAL INFILE '~/KnowMin/repo/data/test_redirects.csv' INTO TABLE TS_OTHER_TEST_redirects_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
-LOAD DATA LOCAL INFILE '~/KnowMin/repo/data/func_prop.csv' INTO TABLE TS_OTHER_TEST_functional_properties FIELDS TERMINATED BY ',' ENCLOSED BY '\"' ESCAPED BY '\\' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/KnowMin-MIK/data/test_categories.csv' INTO TABLE TS_OTHER_TEST_categories_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/KnowMin-MIK/data/test_statements.csv' INTO TABLE TS_OTHER_TEST_statements_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/KnowMin-MIK/data/test_redirects.csv' INTO TABLE TS_OTHER_TEST_redirects_original FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/KnowMin-MIK/data/func_prop.csv' INTO TABLE TS_OTHER_TEST_functional_properties FIELDS TERMINATED BY ',' ENCLOSED BY '\"' ESCAPED BY '\\' LINES TERMINATED BY '\n';
 
 #################################################################################################################################################################################
 
@@ -412,7 +412,7 @@ CREATE TABLE `TS_OTHER_TEST_are_properties_functional_clear` (
 INSERT INTO TS_OTHER_TEST_are_properties_functional_clear
 SELECT trans.predicate, is_functional
 FROM TS_OTHER_TEST_are_properties_functional_md5 md5
-INNER JOIN predicate_translation trans
+INNER JOIN TS_OTHER_TEST_predicate_translation trans
 ON md5.predicate_md5 = trans.predicate_md5;
 
 DROP TABLE IF EXISTS `TS_OTHER_TEST_property_stats_clear`;
@@ -426,6 +426,6 @@ CREATE TABLE `TS_OTHER_TEST_property_stats_clear` (
 INSERT INTO TS_OTHER_TEST_property_stats_clear
 SELECT trans.predicate, predicate_avg, is_functional, considered_functional
 FROM TS_OTHER_TEST_property_stats_md5 md5
-INNER JOIN predicate_translation trans
+INNER JOIN TS_OTHER_TEST_predicate_translation trans
 ON md5.predicate_md5 = trans.predicate_md5;
 
