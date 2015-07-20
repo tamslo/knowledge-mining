@@ -276,7 +276,7 @@ FROM TS_OTHER_TEST_functional_properties;
 
 INSERT INTO TS_OTHER_TEST_are_properties_functional_md5
 SELECT DISTINCT predicate_md5, 0
-FROM predicate_translation
+FROM TS_OTHER_TEST_predicate_translation
 WHERE predicate_md5
 NOT IN (SELECT DISTINCT predicate_md5 FROM TS_OTHER_TEST_are_properties_functional_md5);
 
