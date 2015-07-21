@@ -23,7 +23,7 @@ echo 'Downloading redirects_en ...'
 curl -# http://downloads.dbpedia.org/2014/en/redirects_en.ttl.bz2 | bzip2 -d > data/redirects_en
 
 echo 'Writing CSV file for redirects_en ...'
-cat data/redirects_en | grep -Ev '^#' | native2ascii -reverse -encoding utf8 | sed "s/'/\\\'/g;s/^</'/g;s/> <.*> </','/g;s/> ./'/g" > redirects.csv
+cat data/redirects_en | grep -Ev '^#' | native2ascii -reverse -encoding utf8 | sed "s/'/\\\'/g;s/^</'/g;s/> <.*> </','/g;s/> ./'/g" > data/redirects.csv
 
 
 echo 'Downloading CSV file for functional properties ...'
