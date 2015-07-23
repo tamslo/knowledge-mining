@@ -1,1 +1,7 @@
-sql/
+*~
+
+data/
+
+*.csv
+
+todb.sql
