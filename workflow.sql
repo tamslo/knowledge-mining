@@ -221,44 +221,7 @@ CREATE INDEX `idx_pp_cpo` 	ON `EVAL_property_probability_md5`(`category_md5`, `p
 
 #################################################################################################################################################################################
 
-# Create suggestions
-
-DROP TABLE IF EXISTS `EVAL_suggestions_md5`;
-CREATE TABLE `EVAL_suggestions_md5` (  
-	`status` 		varchar(7), 
-	`subject_md5` 	CHAR(32), 
-	`predicate_md5` CHAR(32), 
-	`object_md5` 	CHAR(32),
-	`probability`	float, 
-	`category_md5`	CHAR(32),
-	`inverted`		tinyint(1)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO EVAL_suggestions_md5
-	SELECT "A" AS status, ca.resource_md5 AS subject_md5, pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
-    	FROM
-    		(SELECT 	pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
-    			FROM 	EVAL_property_probability_md5 AS pp
-    			WHERE	pp.probability        >= 0.9
-        		AND		pp.probability        < 1) AS pp
-    
-	JOIN 		EVAL_categories_md5 	AS ca 	ON pp.category_md5 	= ca.category_md5
-
-	LEFT JOIN 	EVAL_cs_join_md5 	AS st 	ON st.subject_md5 	= ca.resource_md5 
-										AND st.predicate_md5	= pp.predicate_md5 
-										AND st.object_md5 	= pp.object_md5
-    WHERE st.predicate_md5 IS NULL 
-	AND st.object_md5 IS NULL;
-
-#################################################################################################################################################################################
-
-# Clean suggestions from selflinks
-
-DELETE FROM EVAL_suggestions_md5 WHERE subject_md5 = object_md5;
-
-#################################################################################################################################################################################
-
-# Clean suggestions from functional properties
+# Precomputation of functional properties
 
 DROP TABLE IF EXISTS `EVAL_are_properties_functional_md5`;
 CREATE TABLE `EVAL_are_properties_functional_md5` (
@@ -302,6 +265,47 @@ UPDATE EVAL_property_stats_md5
 SET considered_functional = 1
 WHERE is_functional = 1
 OR predicate_avg = 1;
+
+#################################################################################################################################################################################
+
+# Create suggestions
+
+DROP TABLE IF EXISTS `EVAL_suggestions_md5`;
+CREATE TABLE `EVAL_suggestions_md5` (  
+	`status` 		varchar(7), 
+	`subject_md5` 	CHAR(32), 
+	`predicate_md5` CHAR(32), 
+	`object_md5` 	CHAR(32),
+	`probability`	float, 
+	`category_md5`	CHAR(32),
+	`inverted`		tinyint(1)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO EVAL_suggestions_md5
+	SELECT "A" AS status, ca.resource_md5 AS subject_md5, pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
+    	FROM
+    		(SELECT 	pp.predicate_md5, pp.object_md5, pp.probability, pp.category_md5, pp.inverted
+    			FROM 	EVAL_property_probability_md5 AS pp
+    			WHERE	pp.probability        >= 0.9
+        		AND		pp.probability        < 1) AS pp
+    
+	JOIN 		EVAL_categories_md5 	AS ca 	ON pp.category_md5 	= ca.category_md5
+
+	LEFT JOIN 	EVAL_cs_join_md5 	AS st 	ON st.subject_md5 	= ca.resource_md5 
+										AND st.predicate_md5	= pp.predicate_md5 
+										AND st.object_md5 	= pp.object_md5
+    WHERE st.predicate_md5 IS NULL 
+	AND st.object_md5 IS NULL;
+
+#################################################################################################################################################################################
+
+# Clean suggestions from selflinks
+
+DELETE FROM EVAL_suggestions_md5 WHERE subject_md5 = object_md5;
+
+#################################################################################################################################################################################
+
+# Clean suggestions from functional properties
 
 DROP TABLE IF EXISTS `EVAL_functional_prop_suggestions_md5`;
 CREATE TABLE `EVAL_functional_prop_suggestions_md5` (  
