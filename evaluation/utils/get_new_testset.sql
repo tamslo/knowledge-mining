@@ -1,5 +1,7 @@
 # Simple and works; tablename-prefixes may need to be adapted
 
+# Original data from categories and mappingbased_properties needs to be present and translated to MD5
+
 # Get LIMIT x categories
 
 DROP TABLE IF EXISTS `MK_dist_categories_rand`;
